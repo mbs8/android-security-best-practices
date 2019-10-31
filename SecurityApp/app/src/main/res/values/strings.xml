@@ -2,4 +2,7 @@
     <string name="app_name">SecurityApp</string>
     <string name="link"><u>https://www.youtube.com/watch?v=HZPHFY6V1vo</u></string>
     <string name="appChooserTitle">Abrir com</string>
+    <string name="pinTitle">Confirme sua senha</string>
+    <string name="pinMsg">É necessário confirmar sua identidade para permitir o acesso às
+        configurações do usuário.</string>
 </resources>
