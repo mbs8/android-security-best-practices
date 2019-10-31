@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">SecurityApp</string>
-    <string name="link">https://www.youtube.com/watch?v=HZPHFY6V1vo</string>
+    <string name="link"><u>https://www.youtube.com/watch?v=HZPHFY6V1vo</u></string>
+    <string name="appChooserTitle">Abrir com</string>
 </resources>
