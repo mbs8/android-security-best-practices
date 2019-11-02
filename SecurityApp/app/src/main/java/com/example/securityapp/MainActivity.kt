@@ -12,16 +12,23 @@ import kotlinx.android.synthetic.main.activity_main.*
 import android.app.KeyguardManager
 import android.content.Context
 import android.graphics.Bitmap
+import android.location.Location
 import android.provider.MediaStore
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 
 class MainActivity : AppCompatActivity() {
-    val USER_INFO_AUTHENTICATE = 0                // Callback code to access private information
-    val CAMERA_TAG = "Camera"                     // Tag to camera related logs
-    val CAMERA_REQUEST_CODE = 101                 // Request code to ask camera permission to user
-    val REQUEST_IMAGE_CAPTURE = 1                 // Request code to take photo
+    private val USER_INFO_AUTHENTICATE = 0                // Callback code to access private information
+    private val REQUEST_IMAGE_CAPTURE = 1                 // Request code to take photo
+    private val CAMERA_REQUEST_CODE = 101                 // Request code to ask camera permission to user
+    private val MAP_REQUEST_CODE = 102
+    private val CAMERA_TAG = "Camera"                     // Tag to camera related logs
+    private val MAP_TAG = "Map"
 
+    // Client to get the last know user location
+    lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,12 +36,12 @@ class MainActivity : AppCompatActivity() {
 
         // Sets listeners to mapButton and cameraButton
         mapButton.setOnClickListener{
-            val mapIntent = Intent(applicationContext, MapActivity::class.java)
-            startActivity(mapIntent)
+            // Try to open map
+            openMap()
         }
         cameraButton.setOnClickListener{
             // Try access to camera
-            tryStartCamera()
+            startCamera()
         }
 
         // Build the intent
@@ -61,22 +68,58 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Verifies permission and try to start camera
-    private fun tryStartCamera() {
-        makeRequest()
+    private fun openMap() {
+        // Asks user for permission
+        ActivityCompat.requestPermissions(this,
+                                           arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                                           MAP_REQUEST_CODE)
+
         val permission = ContextCompat.checkSelfPermission(this,
-            Manifest.permission.CAMERA)
+                                                            Manifest.permission.CAMERA)
+
+        if (permission == PackageManager.PERMISSION_GRANTED) {
+            // Gets user current location
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location : Location? ->
+                    // Open the user location on map if not null
+                    showUserLocationOnMap(location)
+                }
+        }
+    }
+
+    private fun showUserLocationOnMap(location: Location?) {
+        // Formats uri
+        val uri: String = String.format("geo: %f,%f", location?.latitude, location?.longitude)
+
+        // Create a Uri from an intent string. Use the result to create an Intent.
+        val gmmIntentUri = Uri.parse(uri)
+
+        // Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
+        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+        //Make the Intent explicit by setting the Google Maps package
+        mapIntent.setPackage("com.google.android.apps.maps")
+
+        // Attempt to start an activity that can handle the Intent
+        if (mapIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(mapIntent)
+        }
+    }
+
+    // Verifies permission and try to start camera
+    private fun startCamera() {
+        // Asks user for permission
+        ActivityCompat.requestPermissions(this,
+                                           arrayOf(Manifest.permission.CAMERA),
+                                           CAMERA_REQUEST_CODE)
+
+        val permission = ContextCompat.checkSelfPermission(this,
+                                                            Manifest.permission.CAMERA)
 
         if (permission == PackageManager.PERMISSION_GRANTED) {
             dispatchTakePictureIntent()
         }
-    }
-
-    // Asks user for Camera permission
-    private fun makeRequest() {
-        ActivityCompat.requestPermissions(this,
-            arrayOf(Manifest.permission.CAMERA),
-            CAMERA_REQUEST_CODE)
     }
 
     // Start the activity to take photo
