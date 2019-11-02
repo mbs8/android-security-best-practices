@@ -111,6 +111,11 @@ class MainActivity : AppCompatActivity() {
                 Intent(applicationContext, UserInfoActivity::class.java)
             startActivity(userInfoIntent)
         }
+        // Gets the image from the camera and puts in a imageView
+        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data != null) {
+            val imageBitmap = data.extras?.get("data") as Bitmap
+            //ImageView.setImageBitmap(imageBitmap)
+        }
     }
 
 }
