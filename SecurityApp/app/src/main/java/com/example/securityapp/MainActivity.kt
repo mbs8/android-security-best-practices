@@ -14,6 +14,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.location.Location
 import android.provider.MediaStore
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -69,42 +70,36 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openMap() {
-        // Asks user for permission
+        // Asks user for permission, and then execute onRequestPermissionResult with MAP_REQUEST_CODE
         ActivityCompat.requestPermissions(this,
                                            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                                            MAP_REQUEST_CODE)
 
-        val permission = ContextCompat.checkSelfPermission(this,
-                                                            Manifest.permission.CAMERA)
-
-        if (permission == PackageManager.PERMISSION_GRANTED) {
-            // Gets user current location
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
-            fusedLocationClient.lastLocation
-                .addOnSuccessListener { location : Location? ->
-                    // Open the user location on map if not null
-                    showUserLocationOnMap(location)
-                }
-        }
     }
 
-    private fun showUserLocationOnMap(location: Location?) {
-        // Formats uri
-        val uri: String = String.format("geo: %f,%f", location?.latitude, location?.longitude)
+    private fun showUserLocationOnMap() {
+        // Gets user current location
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        // Create a Uri from an intent string. Use the result to create an Intent.
-        val gmmIntentUri = Uri.parse(uri)
+        val location = fusedLocationClient.lastLocation
+            .addOnSuccessListener { location : Location? ->
+                val uri = String.format("geo: %f,%f", location?.latitude, location?.longitude)
 
-        // Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
-        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-        //Make the Intent explicit by setting the Google Maps package
-        mapIntent.setPackage("com.google.android.apps.maps")
+                // Create a Uri from the location latitude and longitude
+                val gmmIntentUri = Uri.parse(uri)
 
-        // Attempt to start an activity that can handle the Intent
-        if (mapIntent.resolveActivity(getPackageManager()) != null) {
-            startActivity(mapIntent)
-        }
+                // Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
+                val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+                //Make the Intent explicit by setting the Google Maps package
+                mapIntent.setPackage("com.google.android.apps.maps")
+
+                // Attempt to start an activity that can handle the Intent
+                if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(mapIntent)
+                }
+            }
+
+
     }
 
     // Verifies permission and try to start camera
@@ -113,13 +108,6 @@ class MainActivity : AppCompatActivity() {
         ActivityCompat.requestPermissions(this,
                                            arrayOf(Manifest.permission.CAMERA),
                                            CAMERA_REQUEST_CODE)
-
-        val permission = ContextCompat.checkSelfPermission(this,
-                                                            Manifest.permission.CAMERA)
-
-        if (permission == PackageManager.PERMISSION_GRANTED) {
-            dispatchTakePictureIntent()
-        }
     }
 
     // Start the activity to take photo
@@ -158,6 +146,38 @@ class MainActivity : AppCompatActivity() {
         else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data != null) {
             val imageBitmap = data.extras?.get("data") as Bitmap
             //ImageView.setImageBitmap(imageBitmap)
+        }
+    }
+
+    // Callback function when asks for permission
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            CAMERA_REQUEST_CODE -> {
+                // If request is cancelled, the result arrays are empty.
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    // permission to camera was granted
+                    dispatchTakePictureIntent()
+                } else {
+                    // permission to camera was denied
+                    Toast.makeText(applicationContext, "A permissão à câmera foi negada.", Toast.LENGTH_SHORT).show()
+
+                }
+                return
+            }
+
+            MAP_REQUEST_CODE -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    // permission to map was granted
+                    showUserLocationOnMap()
+                } else {
+                    // permission to map was denied
+                    Toast.makeText(applicationContext, "A permissão ao mapa foi negada.", Toast.LENGTH_SHORT).show()
+
+                }
+                return
+            }
+
         }
     }
 
