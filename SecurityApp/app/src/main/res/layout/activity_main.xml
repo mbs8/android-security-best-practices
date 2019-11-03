@@ -7,6 +7,16 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/createContactTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Número de permissões no app"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/protectTextView"
+        app:layout_constraintTop_toBottomOf="@+id/protectButton" />
+
+    <TextView
         android:id="@+id/protectTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -95,5 +105,15 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/protectTextView" />
+
+    <Button
+        android:id="@+id/createContactButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="criar contato"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/createContactTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

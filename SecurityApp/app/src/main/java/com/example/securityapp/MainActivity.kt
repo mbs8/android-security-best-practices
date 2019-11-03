@@ -7,16 +7,15 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import kotlinx.android.synthetic.main.activity_main.*
 import android.app.KeyguardManager
 import android.content.Context
 import android.graphics.Bitmap
 import android.location.Location
+import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 
@@ -66,6 +65,18 @@ class MainActivity : AppCompatActivity() {
         protectButton.setOnClickListener{
             // Asks user for the password of the device to acess private content
             promptUserForPassword()
+        }
+
+        // Creates a new contact using the default app of the system
+        createContactButton.setOnClickListener{
+            Intent(Intent.ACTION_INSERT).apply {
+                type = ContactsContract.Contacts.CONTENT_TYPE
+            }.also { intent ->
+                // Make sure that the user has a contacts app installed on their device.
+                intent.resolveActivity(packageManager)?.run {
+                    startActivity(intent)
+                }
+            }
         }
     }
 
