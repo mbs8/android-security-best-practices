@@ -6,6 +6,7 @@ Parte da disciplina IF710 - Programação com componentes (Desenvolvimento andro
 <p align="center">
     <img src="Images/MainActivity.png" width=270 height=480> 
 </p>
+
 ### 1. Permissões 
 Nesse tópico é abordado como o app deve solicitar permissões para acessar outros apps, como a câmera, ou dados sensíveis, como localização. As permissões são solicitadas por demanda, ou seja, na medida que o usuário solicita a função.  
 Ao clicar no botão da câmera o app verifica se tem acesso àquela funcionalidade e acessa a câmera caso o usuário permita.  
