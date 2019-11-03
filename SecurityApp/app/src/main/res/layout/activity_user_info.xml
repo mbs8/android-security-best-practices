@@ -7,6 +7,19 @@
     tools:context=".UserInfoActivity">
 
     <TextView
+        android:id="@+id/cpfTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:text="CPF"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/cpfPlainText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordTextView" />
+
+    <TextView
         android:id="@+id/passwordTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,10 +36,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textPersonName"
+        android:password="true"
         android:text="password"
         android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@+id/emailTextView"
@@ -62,11 +75,23 @@
         android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:text="Salvar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cpfPlainText" />
+
+    <EditText
+        android:id="@+id/cpfPlainText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:inputType="number"
+        android:text="111.111.111-90"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@+id/passwordPlainText"
         app:layout_constraintTop_toBottomOf="@+id/passwordPlainText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

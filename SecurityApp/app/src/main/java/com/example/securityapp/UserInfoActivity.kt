@@ -30,6 +30,7 @@ class UserInfoActivity : AppCompatActivity() {
 
             dictionary.put(emailTextView.text.toString(), emailPlainText.text.toString())
             dictionary.put(passwordTextView.text.toString(), passwordPlainText.text.toString())
+            dictionary.put(cpfTextView.text.toString(), cpfPlainText.text.toString())
 
             writeDataToFile(dictionary, context)
         }
@@ -58,6 +59,7 @@ class UserInfoActivity : AppCompatActivity() {
             EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB
         ).build()
 
+        // Write to encryptedFile
         encryptedFile.openFileOutput().bufferedWriter().use { writer ->
             for ((key, value) in dictionary) {
                 writer.write("$key:$value\n")
@@ -107,6 +109,8 @@ class UserInfoActivity : AppCompatActivity() {
             emailPlainText.setText(info[1])
         else if (info[0] == passwordTextView.text.toString())
             passwordPlainText.setText(info[1])
+        else if (info[0] == cpfTextView.text.toString())
+            cpfPlainText.setText(info[1])
     }
 }
 
